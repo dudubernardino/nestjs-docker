@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  app: 
+    container_name: nestjs_api
+    build: .
+    command: yarn start:dev
+    ports:
+      - "3000:3000"
+    volumes: 
+      - .:/usr/app
+
+  database:
+    container_name: postgresdb
+    image: postgres
+    environment:
+      POSTGRES_DB: dockerdb
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+    ports:
+      - "5432:5432"
