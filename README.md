@@ -14,11 +14,9 @@
 
 ## 🏦 About the project
 
-This api contains services needed to transfer money and generate bills.
+This api contains an crud of users.
 
-Account holders can transfer amounts to other holders, even from other banks.
-
-Typeable lines of bills of exchange can be generated and verified.
+The purpose of the project is to do an initial configuration of Docker and GraphQL.
 
 ## 🚀 Technologies
 
