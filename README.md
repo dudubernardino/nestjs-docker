@@ -28,6 +28,7 @@ Technologies that I used to develop this api
 - [TypeORM](https://typeorm.io/#/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [GraphQL](https://graphql.org/)
+- [Jest](https://jestjs.io/)
 - [JSDoc](https://jsdoc.app/)
 - [Eslint](https://eslint.org/)
 - [Prettier](https://prettier.io/)
