@@ -15,8 +15,10 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return "NestJS application with Docker and GraphQL!"', () => {
+      expect(appController.getHello()).toBe(
+        'NestJS application with Docker and GraphQL!',
+      );
     });
   });
 });
