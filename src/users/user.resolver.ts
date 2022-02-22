@@ -28,6 +28,11 @@ export class UserResolver {
     return this.userService.findById(userId);
   }
 
+  @Query(() => User)
+  findUserByUsername(@Args('username') username: string): Promise<User> {
+    return this.userService.findByUsername(username);
+  }
+
   @Mutation(() => Boolean)
   deleteUser(@Args('userId') userId: string): Promise<boolean> {
     return this.userService.delete(userId);

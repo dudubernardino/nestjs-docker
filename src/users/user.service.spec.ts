@@ -52,7 +52,7 @@ describe('UserService', () => {
     });
   });
 
-  describe('findOne', () => {
+  describe('findById', () => {
     it('should return a exception when does not to find a user', async () => {
       jest.spyOn(mockRepository, 'findOne').mockReturnValueOnce(null);
 
@@ -62,7 +62,7 @@ describe('UserService', () => {
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
     });
 
-    it('should find a existing user', async () => {
+    it('should find a existing user by id', async () => {
       const foundUser = await service.findById(
         '4378b226-90b5-11ec-b909-0242ac120002',
       );
@@ -71,7 +71,28 @@ describe('UserService', () => {
         id: user.id,
         name: user.name,
         username: user.username,
-        password: user.password,
+      });
+      expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('findByUsername', () => {
+    it('should return a exception when does not to find a user', () => {
+      jest.spyOn(mockRepository, 'findOne').mockReturnValueOnce(null);
+
+      expect(service.findByUsername('dudubernardino')).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
+      expect(mockRepository.findOne).toBeCalledTimes(1);
+    });
+
+    it('should find a existing user by username', async () => {
+      const foundUser = await service.findByUsername('dudubernardino');
+
+      expect(foundUser).toMatchObject({
+        id: user.id,
+        name: user.name,
+        username: user.username,
       });
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
     });

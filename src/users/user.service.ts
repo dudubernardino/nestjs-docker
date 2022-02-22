@@ -76,8 +76,8 @@ export class UserService {
   }
 
   /**
-   * @function findOne
-   * @description Retorna um usuário
+   * @function findById
+   * @description Retorna um usuário pelo Id
    * @param {string} userId - Id do usuário
    * @returns {User}
    */
@@ -88,6 +88,26 @@ export class UserService {
 
     if (!user)
       throw new NotFoundException(`Usuário com ID ${userId} não encontrado`);
+
+    return user;
+  }
+
+  /**
+   * @function findByUsername
+   * @description Retorna um usuário pelo username
+   * @param {string} username - username do usuário
+   * @returns {User}
+   */
+  async findByUsername(username: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { username },
+      select: ['id', 'name', 'username'],
+    });
+
+    if (!user)
+      throw new NotFoundException(
+        `Usuário com username ${username} não encontrado`,
+      );
 
     return user;
   }
