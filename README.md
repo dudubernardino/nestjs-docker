@@ -27,6 +27,7 @@ Technologies that I used to develop this api
 - [Nest.js](https://nestjs.com/)
 - [TypeORM](https://typeorm.io/#/)
 - [PostgreSQL](https://www.postgresql.org/)
+- [JWT](https://jwt.io/)
 - [GraphQL](https://graphql.org/)
 - [Jest](https://jestjs.io/)
 - [JSDoc](https://jsdoc.app/)
@@ -56,7 +57,7 @@ $ git clone https://github.com/dudubernardino/nestjs-docker && cd nestjs-docker
 $ cp .env.example .env
 
 # Create the instance of postgreSQL using docker
-$ docker-compose up
+$ docker-compose up -d
 
 # Well done, project is started!
 ```
