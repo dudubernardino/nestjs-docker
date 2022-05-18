@@ -31,9 +31,13 @@ export class UserService {
 
     const user = this.userRepository.create(data);
 
-    const result = await this.userRepository.save(user);
+    try {
+      const result = await this.userRepository.save(user);
 
-    return result ? true : false;
+      return result ? true : false;
+    } catch (err) {
+      throw new Error('Não foi possível criar o usuário');
+    }
   }
 
   /**
@@ -101,13 +105,8 @@ export class UserService {
   async findByUsername(username: string): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { username },
-      select: ['id', 'name', 'username'],
+      select: ['id', 'name', 'username', 'password'],
     });
-
-    if (!user)
-      throw new NotFoundException(
-        `Usuário com username ${username} não encontrado`,
-      );
 
     return user;
   }
@@ -124,8 +123,12 @@ export class UserService {
     if (!user)
       throw new NotFoundException(`Usuário com ID ${userId} não encontrado`);
 
-    const result = await this.userRepository.remove(user);
+    try {
+      const result = await this.userRepository.remove(user);
 
-    return result ? true : false;
+      return result ? true : false;
+    } catch (err) {
+      throw new Error('Não foi possível remover o usuário');
+    }
   }
 }

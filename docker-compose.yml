@@ -4,9 +4,15 @@ services:
   app: 
     container_name: nestjs_api
     build: .
+    # Command to dev -> yarn start:dev
+    # Command to debug -> yarn start:debug
     command: yarn start:dev
+    environment: 
+      NODE_ENV: development
+      PORT: 3000 
     ports:
       - "3000:3000"
+      # Port to debug
       - "9229:9229"
     volumes: 
       - .:/usr/app
