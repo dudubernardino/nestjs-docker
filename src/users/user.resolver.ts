@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { CacheInterceptor, UseGuards, UseInterceptors } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GqlAuthGuard } from 'src/auth/guards/auth.guard';
 import { CreateUserInput } from './dto/create-user.input';

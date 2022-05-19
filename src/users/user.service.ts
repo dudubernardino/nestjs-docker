@@ -1,9 +1,12 @@
 import {
+  CACHE_MANAGER,
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RedisCacheService } from 'src/database/services/redis-cache.service';
 import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -14,6 +17,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    private readonly redis: RedisCacheService,
   ) {}
 
   /**
@@ -65,6 +70,8 @@ export class UserService {
       },
     );
 
+    await this.redis.del(`User-${data.userId}`);
+
     return result.affected > 0;
   }
 
@@ -86,12 +93,18 @@ export class UserService {
    * @returns {User}
    */
   async findById(userId: string): Promise<User> {
+    const getUserByCache = await this.redis.get(`User-${userId}`);
+
+    if (getUserByCache) return getUserByCache;
+
     const user = await this.userRepository.findOne(userId, {
       select: ['id', 'name', 'username'],
     });
 
     if (!user)
       throw new NotFoundException(`Usuário com ID ${userId} não encontrado`);
+
+    await this.redis.set(`User-${userId}`, user);
 
     return user;
   }
