@@ -11,4 +11,9 @@ export class AuthResolver {
   login(@Args('data') data: AuthInput): Promise<AuthType> {
     return this.authService.validateUser(data);
   }
+
+  @Mutation(() => String)
+  refreshToken(@Args('oldToken') oldToken: string): Promise<string> {
+    return this.authService.refreshToken(oldToken);
+  }
 }

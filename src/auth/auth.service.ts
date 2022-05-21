@@ -32,10 +32,36 @@ export class AuthService {
 
     const token = await this.generateJwtToken(user);
 
+    user.refreshToken = token;
+
+    await User.save(user);
+
     return {
       user,
       token,
     };
+  }
+
+  /**
+   * @function refreshToken
+   * @description Gera um refresh token
+   * @param {string} oldToken - username do usuário
+   * @returns {string}
+   */
+  async refreshToken(oldToken: string): Promise<string> {
+    const user = await User.findOne({
+      where: { refreshToken: oldToken },
+    });
+
+    if (!user) throw new UnauthorizedException('Token inválido');
+
+    const refreshToken = await this.generateJwtToken(user, true);
+
+    user.refreshToken = refreshToken;
+
+    await User.save(user);
+
+    return refreshToken;
   }
 
   /**
@@ -44,9 +70,16 @@ export class AuthService {
    * @param {User} user - usuário
    * @returns {string}
    */
-  private async generateJwtToken(user: User): Promise<string> {
+  private async generateJwtToken(
+    user: User,
+    expiresIn?: boolean,
+  ): Promise<string> {
     const payload = { username: user.name, sub: user.id };
 
-    return this.jwtService.signAsync(payload);
+    return expiresIn
+      ? this.jwtService.sign(payload, {
+          expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRES_IN,
+        })
+      : this.jwtService.signAsync(payload);
   }
 }

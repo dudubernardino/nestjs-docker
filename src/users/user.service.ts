@@ -70,7 +70,9 @@ export class UserService {
       },
     );
 
-    await this.redis.del(`User-${data.userId}`);
+    const getUserByCache = await this.redis.get(`User-${data.userId}`);
+
+    if (getUserByCache) await this.redis.del(`User-${data.userId}`);
 
     return result.affected > 0;
   }

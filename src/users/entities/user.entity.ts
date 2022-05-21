@@ -1,5 +1,6 @@
 import { Field, HideField, ObjectType } from '@nestjs/graphql';
 import { hashSync } from 'bcrypt';
+import { Exclude } from 'class-transformer';
 import {
   BaseEntity,
   BeforeInsert,
@@ -29,6 +30,11 @@ export class User extends BaseEntity {
   @Column({ name: 'password', type: 'varchar' })
   @HideField()
   password: string;
+
+  @Field()
+  @Exclude()
+  @Column({ name: 'refresh_token', type: 'varchar', default: null })
+  refreshToken?: string;
 
   @Field()
   @CreateDateColumn({ name: 'created_at' })

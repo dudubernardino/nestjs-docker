@@ -7,6 +7,7 @@ type User {
   name: String!
   username: String!
   password: String!
+  refreshToken: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -33,6 +34,7 @@ type Mutation {
   updateUser(data: UpdateUserInput!): Boolean!
   deleteUser(userId: String!): Boolean!
   login(data: AuthInput!): AuthType!
+  refreshToken(oldToken: String!): String!
 }
 
 input CreateUserInput {
