@@ -2,8 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
 import { RedisCacheService } from 'src/database/services/redis-cache.service';
-import { User } from 'src/users/entities/user.entity';
-import { UserService } from 'src/users/user.service';
+import { User } from '../users/entities/user.entity';
+import { UserService } from '../users/user.service';
+
 import { AuthInput } from './dto/auth-input.input';
 import { AuthType } from './dto/auth-type.object';
 

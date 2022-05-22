@@ -1,22 +1,15 @@
-import {
-  CACHE_MANAGER,
-  ConflictException,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { RedisCacheService } from 'src/database/services/redis-cache.service';
-import TestUtil from '../../src/common/test/TestUtil';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
-import { Cache } from 'cache-manager';
+import TestUtil from 'src/common/test/TestUtil';
 
 const user = TestUtil.getValidUser();
 
 describe('UserService', () => {
   let service: UserService;
-  let cache: Cache;
-  let redis: RedisCacheService;
 
   const mockRepository = {
     find: jest.fn().mockReturnValue([user, user]),
@@ -38,13 +31,6 @@ describe('UserService', () => {
           useValue: mockRepository,
         },
         {
-          provide: CACHE_MANAGER,
-          useValue: {
-            get: () => 'any value',
-            set: () => jest.fn(),
-          },
-        },
-        {
           provide: RedisCacheService,
           useValue: {
             get: jest.fn(),
@@ -54,14 +40,10 @@ describe('UserService', () => {
     }).compile();
 
     service = module.get<UserService>(UserService);
-    cache = module.get(CACHE_MANAGER);
-    redis = module.get<RedisCacheService>(RedisCacheService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
-    expect(cache).toBeDefined();
-    expect(redis).toBeDefined();
   });
 
   afterEach(() => {
