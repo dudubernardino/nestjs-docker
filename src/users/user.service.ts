@@ -1,7 +1,5 @@
 import {
-  CACHE_MANAGER,
   ConflictException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -100,7 +98,7 @@ export class UserService {
     if (getUserByCache) return getUserByCache;
 
     const user = await this.userRepository.findOne(userId, {
-      select: ['id', 'name', 'username'],
+      select: ['id', 'name', 'username', 'refreshToken'],
     });
 
     if (!user)

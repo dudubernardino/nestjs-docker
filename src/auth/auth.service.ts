@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
+import { RedisCacheService } from 'src/database/services/redis-cache.service';
 import { User } from 'src/users/entities/user.entity';
 import { UserService } from 'src/users/user.service';
 import { AuthInput } from './dto/auth-input.input';
@@ -11,6 +12,7 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly redis: RedisCacheService,
   ) {}
 
   /**
@@ -55,13 +57,33 @@ export class AuthService {
 
     if (!user) throw new UnauthorizedException('Token inválido');
 
-    const refreshToken = await this.generateJwtToken(user, true);
+    const refreshToken = await this.generateJwtToken(
+      user,
+      process.env.JWT_REFRESH_TOKEN_EXPIRES_IN,
+    );
 
     user.refreshToken = refreshToken;
 
     await User.save(user);
 
     return refreshToken;
+  }
+
+  async logout(user: User): Promise<boolean> {
+    const revokeAccessToken = await this.generateJwtToken(
+      user,
+      process.env.JWT_REVOKE_ACCESS_EXPIRES_IN,
+    );
+
+    user.refreshToken = revokeAccessToken;
+
+    await User.save(user);
+
+    const getUserByCache = await this.redis.get(`User-${user.id}`);
+
+    if (getUserByCache) await this.redis.del(`User-${user.id}`);
+
+    return true;
   }
 
   /**
@@ -72,13 +94,13 @@ export class AuthService {
    */
   private async generateJwtToken(
     user: User,
-    expiresIn?: boolean,
+    expiresIn?: string,
   ): Promise<string> {
     const payload = { username: user.name, sub: user.id };
 
     return expiresIn
       ? this.jwtService.sign(payload, {
-          expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRES_IN,
+          expiresIn,
         })
       : this.jwtService.signAsync(payload);
   }
