@@ -6,7 +6,7 @@ services:
     build: .
     # Command to dev -> yarn start:dev
     # Command to debug -> yarn start:debug
-    command: yarn start:dev
+    command: yarn start:debug
     environment: 
       NODE_ENV: development
       PORT: 3000 
@@ -16,9 +16,10 @@ services:
       - "9229:9229"
     volumes: 
       - .:/usr/app
+      - /usr/app/node_modules
 
   database:
-    container_name: postgresdb
+    container_name: nestjs_postgresdb
     image: postgres
     environment:
       POSTGRES_DB: dockerdb
@@ -28,6 +29,7 @@ services:
       - "5432:5432"
 
   redis:
+    container_name: nestjs_redis
     image: redis
     command: redis-server --requirepass docker --appendonly yes
     hostname: redis
