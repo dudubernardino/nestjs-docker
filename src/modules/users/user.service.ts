@@ -1,10 +1,11 @@
 import {
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RedisCacheService } from 'src/database/services/redis-cache.service';
+import { RedisCacheService } from '../../database/services/redis-cache.service';
 import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -34,13 +35,14 @@ export class UserService {
 
     const user = this.userRepository.create(data);
 
-    try {
-      const result = await this.userRepository.save(user);
+    const result = await this.userRepository.save(user);
 
-      return result ? true : false;
-    } catch (err) {
-      throw new Error('Não foi possível criar o usuário');
-    }
+    if (!result)
+      throw new InternalServerErrorException(
+        'Não foi possível criar o usuário',
+      );
+
+    return true;
   }
 
   /**
@@ -136,12 +138,13 @@ export class UserService {
     if (!user)
       throw new NotFoundException(`Usuário com ID ${userId} não encontrado`);
 
-    try {
-      const result = await this.userRepository.remove(user);
+    const result = await this.userRepository.remove(user);
 
-      return result ? true : false;
-    } catch (err) {
-      throw new Error('Não foi possível remover o usuário');
-    }
+    if (!result)
+      throw new InternalServerErrorException(
+        'Não foi possível remover o usuário',
+      );
+
+    return true;
   }
 }

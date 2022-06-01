@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
-import { RedisCacheService } from 'src/database/services/redis-cache.service';
+import { RedisCacheService } from '../../database/services/redis-cache.service';
 import { User } from '../users/entities/user.entity';
 import { UserService } from '../users/user.service';
 
